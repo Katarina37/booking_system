@@ -49,7 +49,7 @@ export async function login(input: LoginInput): Promise<{user: AuthResponse; tok
 
     const pool = await getPool();
 
-    const result = await pool.request().input('email', sql.NVarChar, input.email).query('SELECT Id, Name, PasswordHash, Email FROM Users WHERE Email = @email');
+    const result = await pool.request().input('email', sql.NVarChar, input.email).query('SELECT Id, Name, PasswordHash, Email, Role FROM Users WHERE Email = @email');
 
     const user = result.recordset[0];
     if(!user){
@@ -62,7 +62,7 @@ export async function login(input: LoginInput): Promise<{user: AuthResponse; tok
     }
 
     const token = jwt.sign(
-        {userId: user.Id},
+        {userId: user.Id, role: user.Role},
         JWT_SECRET,
         {expiresIn: JWT_EXPIRES_IN}
     );
