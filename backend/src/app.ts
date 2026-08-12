@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import router from './modules/auth/auth-routes';
 import serviceRouter from './modules/services/services-routes';
+import employeeRouter from './modules/employees/employee-routes';
 
 const app: Application = express();
 
@@ -19,5 +20,6 @@ app.use(cookieParser());
 //sve rute iz routera treba da imaju prefiks /api/auth
 app.use('/api/auth', router);
 app.use('/api/services', serviceRouter);
+app.use('/api/employees', employeeRouter);
 
 export default app;
