@@ -6,7 +6,8 @@ import { useAuth } from "../context/AuthContext";
 
 //{children} : {children: ReactNode}) -> ovo se koristi kad koristimo nesto da obavijemo oko necega drugog, npr to je koristeno i kod authprovidera
 
-function ProtectedRoute({children} : {children: ReactNode}){
+//dodato za requireAdmin
+function ProtectedRoute({children, requireAdmin = false} : {children: ReactNode; requireAdmin?: boolean}){
 
     const {user, isLoading} = useAuth();
 
@@ -18,6 +19,11 @@ function ProtectedRoute({children} : {children: ReactNode}){
     //replace stoji da ne bismo strelicom unazad mogli opet da se vratimo na zasticenu rutu
     if(!user){
         return <Navigate to="/login" replace/>;
+    }
+
+    //dodato
+    if(requireAdmin && user.role !== 'admin'){
+        return <Navigate to="/dashboard" replace/>
     }
 
     return <>{children}</>

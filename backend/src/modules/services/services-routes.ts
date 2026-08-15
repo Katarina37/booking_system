@@ -4,9 +4,10 @@ import { requireAuth, requireAdmin } from "../auth/auth-middleware";
 
 const serviceRouter = Router();
 
-serviceRouter.post('/', getServicesController);
+//treba get a ne post
+serviceRouter.get('/', getServicesController);
 serviceRouter.post('/', requireAuth, requireAdmin, createServiceController);
 serviceRouter.post('/:id', requireAuth, requireAdmin, updateServiceController);
-serviceRouter.post('/:id', requireAuth, requireAdmin, deleteServiceController);
+serviceRouter.delete('/:id', requireAuth, requireAdmin, deleteServiceController);
 
 export default serviceRouter;

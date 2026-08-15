@@ -17,5 +17,5 @@ export async function updateService(input: UpdateServiceInput): Promise<ServiceR
 }
 
 export async function deleteService(id: number): Promise<void> {
-    await axiosInstance.delete('/services/${id}');
+    await axiosInstance.delete(`/services/${id}`);
 }

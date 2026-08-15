@@ -1,6 +1,7 @@
 import { Link, useActionData, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useState, type FormEvent } from "react";
+import './css/Auth.css'
 
 
 function Login(){
@@ -28,10 +29,11 @@ function Login(){
     }
 
     return(
-        <div>
+        <div className="auth-page">
+            <div className="auth-card">
             <h1>Login</h1>
             <form onSubmit={handleSubmit}>
-                <div>
+                <div className="auth-field">
                     <label htmlFor="email">Email</label>
                     <input
                         id={email}
@@ -42,7 +44,7 @@ function Login(){
                     />
                 </div>
 
-                <div>
+                <div className="auth-field">
                     <label htmlFor="password">Password</label>
                     <input
                         id={password}
@@ -53,15 +55,17 @@ function Login(){
                     />
                 </div>
 
-                {error && <p style={{color: 'red'}}>{error}</p>}
+                {error && <p className="auth-error">{error}</p>}
 
-                <button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? 'Logovanje je u toku...' : "Login"}
+                <button type="submit" className="auth-submit" disabled={isSubmitting}>
+                    {isSubmitting ? 'Loggin in...' : "Login"}
                 </button>
             </form>
 
-            <p>Nemate nalog? <Link to="/register">Registrujte se</Link></p>
+            <p className="auth-switch">Don't have an account? <Link to="/register">Register here</Link></p>
 
+            </div>
+            
         </div>
     );
 }

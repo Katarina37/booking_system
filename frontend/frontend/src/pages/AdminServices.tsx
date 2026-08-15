@@ -65,6 +65,64 @@ function AdminServices(){
             setError('Greska pri brisanju usluge');
         }
     }
+
+    return(
+        <div>
+            <h1>Upravljanje uslugama</h1>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label htmlFor="name">Naziv</label>
+                    <input
+                    id="name"
+                    value={name}
+                    type="text"
+                    onChange={(e) => setName(e.target.value)}
+                    required/>
+                </div>
+                <div>
+                    <label htmlFor="duration">Trajanje (min)</label>
+                    <input
+                    id="duration"
+                    value={durationMinutes}
+                    type="number"
+                    onChange={(e) => setDurationMinutes(e.target.value)}
+                    required
+                    min={1}
+                    />
+                </div>
+                <div>
+                    <label htmlFor="price">Cijena</label>
+                    <input
+                    id="price"
+                    value={price}
+                    type="number"
+                    onChange={(e) => setPrice(e.target.value)}
+                    required
+                    //??
+                    min={0}
+                    step="0.01"/>
+                </div>
+                {error && <p style={{color:'red'}}>{error}</p>}
+                <button type="submit">Dodaj uslugu</button>
+            </form>
+
+            <h2>Postojece usluge</h2>
+            {isLoading ? (
+                <p>Ucitavanje...</p>
+            ) : services.length === 0 ? (
+                <p>Trenutno nema dodanih usluga</p>
+            ) : (
+                <ul>
+                    {services.map((service) => (
+                        <li key={service.id}>
+                            {service.name} - {service.durationMinutes} min - {service.price}
+                            <button onClick={() => handleDelete(service.id)}>Obrisi</button>
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
 }
 
 export default AdminServices;

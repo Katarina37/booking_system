@@ -1,5 +1,6 @@
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import './css/Dashboard.css'
 
 function Dashboard(){
     const {user, logout} = useAuth();
@@ -11,9 +12,37 @@ function Dashboard(){
     }
 
     return(
-        <div>
-            <h1>Dobrodosao {user?.name}</h1>
-            <button onClick={handleLogout}>Odjavi se</button>
+        <div className="dashboard-page">
+            <div className="dashboard-header">
+                <div className="dashboard-header-text">
+                    <h1>Welcome {user?.name}</h1>
+                </div>
+                <button className="dashboard-logout" onClick={handleLogout}>Log out</button>
+            </div>
+
+            <div className="dashboard-content">
+                {user?.role === 'admin' && (
+                <>
+                    <h2>Admin panel</h2>
+                    <div className="admin-panel-grid">
+                        <Link to="/admin/services" className="admin-panel-card">
+                            <h3>Services</h3>
+                            <p>Add or delete services</p>
+                        </Link>
+                        <Link to="/admin/employees" className="admin-panel-card">
+                             <h3>Employees</h3>
+                            <p>Manage employees and their services</p>
+                        </Link>
+                    </div>
+            
+                       
+                    
+                </>
+            )}
+            </div>
+
+            
+            
         </div>
     );
 }

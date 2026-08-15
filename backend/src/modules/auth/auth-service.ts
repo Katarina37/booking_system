@@ -27,14 +27,15 @@ export async function register(input: RegisterInput): Promise<AuthResponse>{
     const passwordHash = await bcrypt.hash(input.password, SALT_ROUNDS);
 
     const user = await pool.request().input('email', sql.NVarChar, input.email).input('passwordHash', sql.NVarChar, passwordHash).input('name', sql.NVarChar, input.name).query(`INSERT INTO Users (Email, PasswordHash, Name)
-    OUTPUT INSERTED.Id, INSERTED.Email, INSERTED.Name VALUES (@email, @passwordHash, @name)`);
+    OUTPUT INSERTED.Id, INSERTED.Email, INSERTED.Name INSERTED.Role VALUES (@email, @passwordHash, @name)`);
 
     const newUser = user.recordset[0];
 
     return{        
         id: newUser.Id,
         email: newUser.Email,
-        name: newUser.Name
+        name: newUser.Name,
+        role: newUser.Role,
     };
 }
 
@@ -71,7 +72,8 @@ export async function login(input: LoginInput): Promise<{user: AuthResponse; tok
         user:{
             id: user.Id,
             email: user.Email,
-            name: user.Name
+            name: user.Name,
+            role: user.Role,
         },
         token
     };

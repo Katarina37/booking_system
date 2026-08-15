@@ -1,0 +1,84 @@
+/*pozadina stranice*/
+.dashboard-page {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+}
+
+/*heder u kome se nalaze dobrodosao i logout dugme*/
+.dashboard-header {
+  background: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end));
+  padding: var(--spacing-xl) var(--spacing-lg);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.dashboard-header-text h1 {
+  font-size: 1.75rem;
+  margin-bottom: var(--spacing-xs);
+}
+
+.dashboard-header-text p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.dashboard-logout {
+  padding: var(--spacing-xs) var(--spacing-lg);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: var(--radius-sm);
+  color: white;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.dashboard-logout:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.dashboard-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-lg);
+}
+
+.dashboard-content h2 {
+  font-size: 1.25rem;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-text-muted);
+}
+
+.admin-panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.admin-panel-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--spacing-lg);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: transform 0.2s;
+}
+
+.admin-panel-card:hover {
+  transform: translateY(-4px);
+}
+
+.admin-panel-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-xs);
+}
+
+.admin-panel-card p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}

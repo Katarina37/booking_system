@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import './css/Auth.css'
 
 function Register(){
     //zasto bas ovi parametri
@@ -34,11 +35,12 @@ function Register(){
     }
 
     return(
-        <div>
-            <h1>Registracija</h1>
+        <div className="auth-page">
+            <div className="auth-card">
+            <h1>Register</h1>
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="name">Ime</label>
+                <div className="auth-field">
+                    <label htmlFor="name">Name</label>
                     <input
                         id="name"
                         type="text"
@@ -48,7 +50,7 @@ function Register(){
                     />
                 </div>
 
-                <div>
+                <div className="auth-field">
                     <label htmlFor="email">Email</label>
                     <input
                         id="email"
@@ -59,8 +61,8 @@ function Register(){
                     />
                 </div>
 
-                <div>
-                    <label htmlFor="email">Lozinka</label>
+                <div className="auth-field">
+                    <label htmlFor="email">Password</label>
                     <input
                         id="password"
                         type="password"
@@ -71,17 +73,18 @@ function Register(){
                     />
                 </div>
 
-                {error && <p style={{color: 'red'}}>{error}</p>}
+                {error && <p className="auth-error">{error}</p>}
 
-                <button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? 'Registracija je u toku...' : 'Registruj se'}
+                <button className="auth-submit" type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? 'Registering...' : 'Register'}
                 </button>
             </form>
 
-            <p>
-                Vec imas nalog? <Link to="/login">Uloguj se</Link>
+            <p className="auth-switch">
+                Already have an account? <Link to="/login">Log in</Link>
             </p>
 
+            </div>
         </div>
     );
 

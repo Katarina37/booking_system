@@ -4,6 +4,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import AdminServices from "./pages/AdminServices";
+import AdminEmployees from "./pages/AdminEmployees";
 
 function App(){
   return(
@@ -14,6 +16,14 @@ function App(){
           <Route path="/login" element={<Login/>}/>
           <Route path="/dashboard" element={<ProtectedRoute>
               <Dashboard/>
+            </ProtectedRoute>}/>
+          <Route path="/admin/services" element=
+          {<ProtectedRoute requireAdmin>
+              <AdminServices/>
+            </ProtectedRoute>}/>
+          <Route path="/admin/employees" element=
+          {<ProtectedRoute requireAdmin>
+              <AdminEmployees/>
             </ProtectedRoute>}/>
         </Routes>
       </BrowserRouter>

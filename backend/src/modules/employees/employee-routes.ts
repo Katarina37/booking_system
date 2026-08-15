@@ -4,9 +4,9 @@ import { requireAdmin, requireAuth } from "../auth/auth-middleware";
 
 const employeeRouter = Router();
 
-employeeRouter.post('/', getEmployeesController);
+employeeRouter.get('/', getEmployeesController);
 employeeRouter.post('/', requireAuth, requireAdmin, createEmployeeController);
-employeeRouter.post('/:id', requireAuth, requireAdmin, deleteEmployeeController);
+employeeRouter.delete('/:id', requireAuth, requireAdmin, deleteEmployeeController);
 
 export default employeeRouter;
 

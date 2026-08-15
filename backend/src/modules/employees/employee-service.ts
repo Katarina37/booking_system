@@ -20,7 +20,7 @@ export async function getEmployees(): Promise<EmployeeResponse[]>{
 
     //trazimo zaposlenog iz tabele EmployeeServices na osnovu proslijedjenog emplId i onda innerjoin sa service tabelom
     for(const employee of employees){
-       const serviceResult = await pool.request().input('employeesId', sql.Int, employee.Id).query(`SELECT s.Id, s.Name FROM SERVICES S INNER JOIN EmployeeServices es ON s.Id = es.ServiceId WHERE es.EmployeeId = @employeeId`);
+       const serviceResult = await pool.request().input('employeeId', sql.Int, employee.Id).query(`SELECT s.Id, s.Name FROM SERVICES S INNER JOIN EmployeeServices es ON s.Id = es.ServiceId WHERE es.EmployeeId = @employeeId`);
 
        //selektujemo id i name servisa(usluge) iz tabele services -> ovo ide na kraju
        //1. spajamo tabelu services sa employeeservices da bismo iz tabele employeeservices dosli do tabele services preko zajednickog parametra, a to je id 
@@ -66,7 +66,7 @@ export async function createEmployee(input: CreateEmployeeInput): Promise<Employ
 
 export async function deleteEmployee(id: number): Promise<void>{
     const pool = await getPool();
-    const result = await pool.request().input('id', sql.Int, id).query('DELETE FROM Employees WHERE Id = @id');
+    const result = await pool.request().input('id', sql.Int, id).query(`DELETE FROM Employees WHERE Id = @id`);
     if(result.rowsAffected[0] === 0){
         throw new Error('Zaposleni ne postoji');
     }
