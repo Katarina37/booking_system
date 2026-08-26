@@ -4,6 +4,8 @@ import { getEmployees, createEmployee, deleteEmployee } from "../api/employees-a
 import type { Employee } from "../types/employee-types";
 import type { ServiceResponse } from "../types/service-types";
 import { getServices } from "../api/services-api";
+import { Link } from "react-router-dom";
+import './css/Admin.css';
 
 function AdminEmployees(){
     const [name, setName] = useState('');
@@ -69,32 +71,37 @@ function AdminEmployees(){
         }
     }
     return(
-        <div>
-            <h1>Upravljanje zaposlenima</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="name">Ime</label>
-                    <input
-                    id="name"
-                    value={name}
-                    type="text"
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                    id="email"
-                    value={email}
-                    type="email"
-                    onChange={(e) => setEmail(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <p>Usluge koje radi:</p>
+        <div className="admin-page">
+            <div className="admin-container">
+                <Link to="/dashboard" className="admin-back-link">Back to dashboard</Link>
+                <h1>Managing employees</h1>
+                <form onSubmit={handleSubmit} className="admin-form">
+                    <div className="admin-form-row">
+                        <div className="admin-field">
+                            <label htmlFor="name">Name</label>
+                            <input
+                            id="name"
+                            value={name}
+                            type="text"
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            />
+                        </div>
+                        <div className="admin-field">
+                            <label htmlFor="email">Email</label>
+                            <input
+                            id="email"
+                            value={email}
+                            type="email"
+                            onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                    
+                <div className="admin-checkbox-group">
+                    <p>Employee's services:</p>
                     {services.map((service) => (
-                        <label key={service.id} style={{display:'block'}}>
+                        <label key={service.id} className="admin-checkbox-label">
                             <input
                             type="checkbox"
                             checked={selectedServiceIds.includes(service.id)}
@@ -103,28 +110,34 @@ function AdminEmployees(){
                         </label>
                     ))}
                 </div>
-                {error && <p style={{color:'red'}}>{error}</p>}
-                <button type="submit">Dodaj zaposlenog</button>
+
+                {error && <p className="admin-error">{error}</p>}
+                <button type="submit" className="admin-submit">Add employee</button>
             </form>
-            <h2>Postojeci zaposleni</h2>
+            <h2>Existing employees</h2>
             {isLoading ? (
-                <p>Ucitavanje...</p>
-            ) : employees.length === 0 ? (
-                <p>Trenutno nema zaposlenih</p>
-            ) : (
-                <ul>
+                <p>Loading...</p>
+                ) : employees.length === 0 ? (
+                <p className="admin-empty">Currently no added employees</p>
+                ) : (
+                <ul className="admin-list">
                     {employees.map((employee) => (
-                        <li key={employee.id}>
-                            {employee.name}
-                            {employee.email && `(${employee.email})`}{' - '}
-                            {employee.services.map((s) => s.name).join(', ')}
-                            <button onClick={() => handleDelete(employee.id)}>
-                                Obrisi
+                        <li key={employee.id} className="admin-list-item">
+                            <div className="admin-list-item-info">
+                                <strong>{employee.name}</strong>
+                                <span>
+                                    {employee.email && `(${employee.email})`}{' - '}
+                                    {employee.services.map((s) => s.name).join(', ')}
+                                </span>
+                            </div>
+                            <button className="admin-delete-btn" onClick={() => handleDelete(employee.id)}>
+                                Delete
                             </button>
                         </li>
                     ))}
                 </ul>
             )}
+            </div>  
         </div>
     );
 
