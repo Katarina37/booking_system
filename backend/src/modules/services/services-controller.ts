@@ -30,6 +30,7 @@ export async function createServiceController(req: Request, res: Response): Prom
 export async function updateServiceController(req: Request, res: Response): Promise<void> {
     try{
         //fali id
+        //izvlacenje id iz URL
         const id = Number(req.params.id);
         const input: UpdateServiceInput = req.body;
         const service = await updateService(id, input);
