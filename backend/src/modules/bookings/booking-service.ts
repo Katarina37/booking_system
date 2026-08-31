@@ -1,4 +1,4 @@
-import { AvailableSlostsQuery, CreateBookingInput, BookingResponse } from "../../types/booking-types";
+import { AvailableSlostsQuery, CreateBookingInput, BookingResponse, ClientBookingResponse } from "../../types/booking-types";
 import sql from 'mssql';
 import { getPool } from "../../config/database";
 
@@ -90,4 +90,44 @@ export async function createBooking(clientId: number, input: CreateBookingInput)
         startTime: booking.StartTime.toISOString(),
         endTime: booking.EndTime.toISOString()
     };
+}
+
+//treba dodati join-ove za dohvatanje naziva usluga i zaposlenih
+export async function getBookingsForClient(id: number): Promise<ClientBookingResponse[]> {
+    const pool = await getPool();
+    const bookingResult = await pool.request().input('id', sql.Int, id).query(`SELECT b.Id, b.StartTime, b.EndTime, s.Name AS ServiceName, e.Name AS EmployeeName FROM Bookings b INNER JOIN Services s ON b.ServiceId = s.Id INNER JOIN Employees e ON b.EmployeeId = e.Id WHERE b.ClientId = @id`);
+
+    const bookings = bookingResult.recordset;
+
+    return bookings.map((booking) => ({
+        id: booking.Id,
+        employeeName: booking.EmployeeName,
+        serviceName: booking.ServiceName,
+        startTime: booking.StartTime.toISOString(),
+        endTime: booking.EndTime.toISOString(),
+    }));
+}
+
+//treba dodati join-ove za dohvatanje naziva usluga i zaposlenih
+export async function getAllBookings(): Promise<ClientBookingResponse[]> {
+    const pool = await getPool();
+    const bookingResult = await pool.request().query(`SELECT b.Id, b.StartTime, b.EndTime, s.Name AS ServiceName, e.Name AS EmployeeName FROM Bookings b INNER JOIN Services s ON b.ServiceId = s.Id INNER JOIN Employees e ON b.EmployeeId = e.Id ORDER BY NAME`);
+    const bookings = bookingResult.recordset;
+
+    return bookings.map((booking) => ({
+        id: booking.Id,
+        employeeName: booking.EmployeeName,
+        serviceName: booking.ServiceName,
+        startTime: booking.StartTime.toISOString(),
+        endTime: booking.EndTime.toISOString()
+    }));
+}
+
+export async function deleteBooking(id: number, clientId: number): Promise<void> {
+    const pool = await getPool();
+    const bookingResult = await pool.request().input('id', sql.Int, id).input('clientId', sql.Int, clientId).query('DELETE FROM Bookings WHERE Id = @id AND ClientId = @clientId');
+
+    if(bookingResult.rowsAffected[0] === 0){
+        throw new Error('Rezervacija ne postoji');
+    }
 }
