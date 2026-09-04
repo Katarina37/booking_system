@@ -34,12 +34,24 @@ function Dashboard(){
                             <p>Manage employees and their services</p>
                         </Link>
                     </div>
-            
-                       
-                    
+                    <br></br>
                 </>
             )}
+            <div className="admin-panel-grid">
+                        <Link to="/bookings" className="admin-panel-card">
+                            <h3>Bookings</h3>
+                            <p>Create a booking</p>
+                        </Link>
             </div>
+            <br></br>
+            <div className="admin-panel-grid">
+                        <Link to="/my-bookings" className="admin-panel-card">
+                            <h3>My Bookings</h3>
+                            <p>View your bookings</p>
+                        </Link>
+            </div>
+        </div>
+            
 
             
             

@@ -6,6 +6,8 @@ import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import AdminServices from "./pages/AdminServices";
 import AdminEmployees from "./pages/AdminEmployees";
+import BookingPage from "./pages/BookingPage";
+import MyBookingsPage from "./pages/MyBookingsPage";
 
 function App(){
   return(
@@ -25,6 +27,16 @@ function App(){
           {<ProtectedRoute requireAdmin>
               <AdminEmployees/>
             </ProtectedRoute>}/>
+          <Route path="/bookings" element={
+            <ProtectedRoute>
+              <BookingPage/>
+            </ProtectedRoute>
+          }/>
+          <Route path="/my-bookings" element={
+            <ProtectedRoute>
+              <MyBookingsPage/>
+            </ProtectedRoute>
+          }/>
         </Routes>
       </BrowserRouter>
     </AuthProvider>

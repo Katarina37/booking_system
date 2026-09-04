@@ -72,11 +72,11 @@ export async function deleteBookingController(req: AuthRequest, res: Response): 
     try{
         const clientId = req.userId as number;
         const id = Number(req.params.id);
-        const booking = await deleteBooking(id, clientId);
-        res.status(200).json(booking);
+        await deleteBooking(id, clientId);
+        res.status(204).send();
     }catch(err){
         if(err instanceof Error && err.message === 'Rezervacija ne postoji'){
-            res.status(400).json({message: err.message});
+            res.status(404).json({message: err.message});
             return;
         }
         res.status(500).json({message: 'Greska na serveru'});

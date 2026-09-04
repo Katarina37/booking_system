@@ -25,3 +25,8 @@ export interface ClientBookingResponse{
     startTime: string;
     endTime: string;
 }
+
+export interface AdminBookingResponse extends ClientBookingResponse{
+    clientName: string;
+    clientEmail: string;
+}

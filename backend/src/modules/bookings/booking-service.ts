@@ -1,4 +1,4 @@
-import { AvailableSlostsQuery, CreateBookingInput, BookingResponse, ClientBookingResponse } from "../../types/booking-types";
+import { AvailableSlostsQuery, CreateBookingInput, BookingResponse, ClientBookingResponse, AdminBookingResponse } from "../../types/booking-types";
 import sql from 'mssql';
 import { getPool } from "../../config/database";
 
@@ -15,6 +15,14 @@ function addMinutes(date: Date, minutes: number): Date{
     return result;
 }
 
+//timezone fix
+function parseAsLiteral(dateTimeStr: string): Date {
+    const [datePart, timePart] = dateTimeStr.split('T');
+    const [year, month, day] = datePart.split('-').map(Number);
+    const [hours, minutes, seconds = 0] = (timePart ?? '00:00:00').split(':').map((s) => parseInt(s, 10));
+    return new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
+}
+
 export async function getAvailableSlots(query: AvailableSlostsQuery): Promise<string[]> {
     const pool = await getPool();
 
@@ -24,8 +32,8 @@ export async function getAvailableSlots(query: AvailableSlostsQuery): Promise<st
     const durationMinutes = serviceResult.recordset[0].DurationMinutes;
 
     //definisemo radno vrijeme
-    const startOfDay = new Date(`${query.date}T08:00:00`);
-    const endOfDay = new Date(`${query.date}T17:00:00`);
+    const startOfDay = parseAsLiteral(`${query.date}T08:00:00`);
+    const endOfDay = parseAsLiteral(`${query.date}T17:00:00`);
 
     //postojece rezervacije zaposlenog
     const bookingsResult = await pool.request().input('employeeId', sql.Int, query.employeeId).input('startOfDay', sql.DateTime2, startOfDay).input('endOfDay', sql.DateTime2, endOfDay).query(`SELECT StartTime, EndTime FROM Bookings WHERE EmployeeId = @employeeId AND StartTime >= @startOfDay AND StartTime < @endOfDay`);
@@ -46,7 +54,15 @@ export async function getAvailableSlots(query: AvailableSlostsQuery): Promise<st
         const overlapsWithSmth = existingBookings.some((booking) => doTimesOverlap(candidateStart, candidateEnd, booking.StartTime, booking.EndTime));
 
         if(!overlapsWithSmth){
-            availableSlots.push(candidateStart.toISOString());
+            const year = candidateStart.getUTCFullYear();
+            const month = String(candidateStart.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(candidateStart.getUTCDate()).padStart(2, '0');
+            const hours = String(candidateStart.getUTCHours()).padStart(2, '0');
+            const minutes = String(candidateStart.getUTCMinutes()).padStart(2, '0');
+
+            availableSlots.push(
+                `${year}-${month}-${day}T${hours}:${minutes}:00`
+            );
         }
         //sljedeci prolaz ide tacno gdje prethodni stao, npr. od 8:30
         candidateStart = addMinutes(candidateStart, durationMinutes);
@@ -67,19 +83,19 @@ export async function createBooking(clientId: number, input: CreateBookingInput)
     //sto stavljamo .durationminutes
     const durationMinutes = serviceResult.recordset[0].DurationMinutes;
 
-    const startTime = new Date(input.startTime);
+    const startTime = parseAsLiteral(input.startTime);
     const endTime = addMinutes(startTime, durationMinutes);
 
     //cast?? -> AND CAST (StartTime AS DATE)
-    const bookingResult = await pool.request().input('employeeId', sql.Int, input.employeeId).input('startTime', sql.Date, startTime).query(`SELECT StartTime, EndTime FROM Bookings WHERE EmployeeId = @employeeId AND CAST (StartTime AS DATE) = CAST(@startTime AS DATE)`);
+    const bookingResult = await pool.request().input('employeeId', sql.Int, input.employeeId).input('startTime', sql.DateTime2, startTime).query(`SELECT StartTime, EndTime FROM Bookings WHERE EmployeeId = @employeeId AND CAST (StartTime AS DATE) = CAST(@startTime AS DATE)`);
 
     const existingBookings = bookingResult.recordset.some((booking) => doTimesOverlap(startTime, endTime, booking.StartTime, booking.EndTime));
 
-    if(!existingBookings){
+    if(existingBookings){
         throw new Error('Termin je zauzet');
     }
 
-    const result = await pool.request().input('clientId', sql.Int, clientId).input('employeeId', sql.Int, input.employeeId).input('serviceId', sql.Int, input.serviceId).input('startTime', sql.Date, input.startTime).input('endTime', sql.Date, endTime).query(`INSERT INTO Bookings(ClientId, EmployeeId, ServiceId, StartTime, EndTime)OUTPUT INSERTED.Id, INSERTED.EmployeeId, INSERTED.ServiceId, INSERTED.StartTime, INSERTED.EndTime VALUES (@clientId, @employeeId, @serviceId, @startTime, @endTime)`);
+    const result = await pool.request().input('clientId', sql.Int, clientId).input('employeeId', sql.Int, input.employeeId).input('serviceId', sql.Int, input.serviceId).input('startTime', sql.DateTime2, startTime).input('endTime', sql.DateTime2, endTime).query(`INSERT INTO Bookings(ClientId, EmployeeId, ServiceId, StartTime, EndTime)OUTPUT INSERTED.Id, INSERTED.EmployeeId, INSERTED.ServiceId, INSERTED.StartTime, INSERTED.EndTime VALUES (@clientId, @employeeId, @serviceId, @startTime, @endTime)`);
 
     const booking = result.recordset[0];
 
@@ -92,7 +108,6 @@ export async function createBooking(clientId: number, input: CreateBookingInput)
     };
 }
 
-//treba dodati join-ove za dohvatanje naziva usluga i zaposlenih
 export async function getBookingsForClient(id: number): Promise<ClientBookingResponse[]> {
     const pool = await getPool();
     const bookingResult = await pool.request().input('id', sql.Int, id).query(`SELECT b.Id, b.StartTime, b.EndTime, s.Name AS ServiceName, e.Name AS EmployeeName FROM Bookings b INNER JOIN Services s ON b.ServiceId = s.Id INNER JOIN Employees e ON b.EmployeeId = e.Id WHERE b.ClientId = @id`);
@@ -108,10 +123,9 @@ export async function getBookingsForClient(id: number): Promise<ClientBookingRes
     }));
 }
 
-//treba dodati join-ove za dohvatanje naziva usluga i zaposlenih
-export async function getAllBookings(): Promise<ClientBookingResponse[]> {
+export async function getAllBookings(): Promise<AdminBookingResponse[]> {
     const pool = await getPool();
-    const bookingResult = await pool.request().query(`SELECT b.Id, b.StartTime, b.EndTime, s.Name AS ServiceName, e.Name AS EmployeeName FROM Bookings b INNER JOIN Services s ON b.ServiceId = s.Id INNER JOIN Employees e ON b.EmployeeId = e.Id ORDER BY NAME`);
+    const bookingResult = await pool.request().query(`SELECT b.Id, b.StartTime, b.EndTime, s.Name AS ServiceName, e.Name AS EmployeeName, u.Name AS UserName, u.Email AS UserEmail FROM Bookings b INNER JOIN Services s ON b.ServiceId = s.Id INNER JOIN Employees e ON b.EmployeeId = e.Id INNER JOIN Users u ON b.ClientId = u.Id ORDER BY b.StartTime`);
     const bookings = bookingResult.recordset;
 
     return bookings.map((booking) => ({
@@ -119,7 +133,9 @@ export async function getAllBookings(): Promise<ClientBookingResponse[]> {
         employeeName: booking.EmployeeName,
         serviceName: booking.ServiceName,
         startTime: booking.StartTime.toISOString(),
-        endTime: booking.EndTime.toISOString()
+        endTime: booking.EndTime.toISOString(),
+        clientName: booking.UserName,
+        clientEmail: booking.UserEmail
     }));
 }
 

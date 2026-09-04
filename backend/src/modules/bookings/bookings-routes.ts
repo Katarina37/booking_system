@@ -7,7 +7,7 @@ const bookingRouter = Router();
 
 bookingRouter.get('/available-slots', requireAuth, getAvailableSlotsController);
 bookingRouter.post('/', requireAuth, createBookingController);
-bookingRouter.get('/:id', requireAuth, getBookingsForClientController);
+bookingRouter.get('/my-bookings', requireAuth, getBookingsForClientController);
 bookingRouter.get('/', requireAuth, requireAdmin, getAllBookingsController);
 bookingRouter.delete('/:id', requireAuth, deleteBookingController);
 
