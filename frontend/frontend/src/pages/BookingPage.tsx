@@ -95,12 +95,12 @@ function BookingPage(){
         <div className="admin-page">
             <div className="admin-container">
                 <Link to="/dashboard" className="admin-back-link">
-                Back to dashboard</Link>
-                <h1>Book an appointment</h1>
+                Nazad na početnu</Link>
+                <h1>Kreirajte rezervaciju</h1>
                 <div>
-                    <h2>Choose a service</h2>
+                    <h2>Odaberite uslugu</h2>
                     {isLoading ? (
-                        <p className="admin-empty">Loading...</p>
+                        <p className="admin-empty">Učitavanje...</p>
                     ) : (
                         <div className="booking-options-grid">
                             {
@@ -116,7 +116,7 @@ function BookingPage(){
                 {
                     selectedService && (
                         <div>
-                            <h2>Choose an employee</h2>
+                            <h2>Odaberite zaposlenog</h2>
                             <div className="booking-options-grid">
                                 {employees.filter((employee) => employee.services.some((s) => s.id === selectedService)).map((employee) => (
                                     <button key={employee.id} className={`booking-option-btn ${selectedEmployee === employee.id ? 'selected' : ''}`} onClick={() => setSelectedEmployee(employee.id)}>
@@ -130,7 +130,7 @@ function BookingPage(){
             {
                 selectedEmployee && (
                     <div>
-                        <h2>Choose a date</h2>
+                        <h2>Odaberite datum</h2>
                         <input
                         type="date"
                         className="booking-date-input"
@@ -145,10 +145,10 @@ function BookingPage(){
             {
                 selectedDate && (
                     <div>
-                        <h2>Available times</h2>
+                        <h2>Dostupni termini</h2>
                         {
                             availableSlots.length === 0 ? (
-                                <p className="admin-empty">No available slots</p>
+                                <p className="admin-empty">Nema dostupnih termina</p>
                             ) : (
                                 <div className="booking-slots-grid">
                                     {
@@ -168,7 +168,7 @@ function BookingPage(){
                 selectedSlot && (
                     <div className="booking-confirm-section">
                         <button onClick={handleBooking} className="admin-submit">
-                            Confirm booking
+                            Prihvatite rezervaciju
                         </button>
                     </div>
                 )

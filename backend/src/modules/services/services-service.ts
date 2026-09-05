@@ -59,6 +59,11 @@ export async function deleteService(id: number): Promise<void> {
     
     const pool = await getPool();
 
+    const bookingCheck = await pool.request().input('id', sql.Int, id).query('SELECT TOP 1 Id FROM Bookings WHERE ServiceId = @id');
+    if(bookingCheck.recordset.length > 0){
+        throw new Error('Usluga ima rezervacije i ne moze biti obrisana');
+    }
+
     const result = await pool.request().input('id', sql.Int, id).query('DELETE FROM Services WHERE Id = @id');
 
     if(result.rowsAffected[0] === 0){

@@ -15,6 +15,7 @@ function AdminServices(){
     const [price, setPrice] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
 
     //cim se stranica ucita, povuci usluge sa be
     useEffect(() => {
@@ -59,24 +60,30 @@ function AdminServices(){
     }
 
     //delete service
-    async function handleDelete(id: number) {
+    async function handleDelete(id: number, name: string) {
+        const confirmed = window.confirm(`Da li ste sigurni da zelite da obrisete uslugu ${name}`);
+        if(!confirmed) return;
+        setDeletingId(id);
+        setError(null);
         try{
             await deleteService(id);
             await loadServices();
         }catch(err){
-            setError('Greska pri brisanju usluge');
+            setError('Usluga koju zelite da obrisete ima rezervacije.');
+        }finally{
+            setDeletingId(null);
         }
     }
 
     return(
         <div className="admin-page">
             <div className="admin-container">
-                <Link to="/dashboard" className="admin-back-link">Back to dashboard</Link>
-                <h1>Managing services</h1>
+                <Link to="/dashboard" className="admin-back-link">Nazad na početnu</Link>
+                <h1>Upravljanje uslugama</h1>
                 <form onSubmit={handleSubmit} className="admin-form">
                     <div className="admin-form-row">
                         <div className="admin-field">
-                            <label htmlFor="name">Name</label>
+                            <label htmlFor="name">Ime</label>
                             <input
                             id="name"
                             value={name}
@@ -85,7 +92,7 @@ function AdminServices(){
                             required/>
                         </div>
                         <div className="admin-field">
-                            <label htmlFor="duration">Duration (min)</label>
+                            <label htmlFor="duration">Trajanje (min)</label>
                             <input
                             id="duration"
                             value={durationMinutes}
@@ -96,36 +103,35 @@ function AdminServices(){
                             />
                         </div>
                         <div className="admin-field">
-                            <label htmlFor="price">Price</label>
+                            <label htmlFor="price">Cijena (KM)</label>
                             <input
                             id="price"
                             value={price}
                             type="number"
                             onChange={(e) => setPrice(e.target.value)}
-                            required
-                            //??
+                            required                      
                             min={0}
                             step="0.01"/>
                         </div>
                     </div>
                     
                     {error && <p className="admin-error">{error}</p>}
-                    <button type="submit" className="admin-submit">Add service</button>
+                    <button type="submit" className="admin-submit">Dodaj uslugu</button>
                 </form>
-                <h2>Existing services</h2>
+                <h2>Postojeće usluge</h2>
                 {isLoading ? (
-                    <p>Loading...</p>
+                    <p>Učitavanje...</p>
                 ) : services.length === 0 ? (
-                    <p className="admin-empty">Currently there are no added services</p>
+                    <p className="admin-empty">Trenutno nema dodatih usluga</p>
                 ) : (
                     <ul className="admin-list">
                         {services.map((service) => (
                             <li key={service.id} className="admin-list-item">
                                 <div className="admin-list-item-info">
                                     <strong>{service.name}</strong>
-                                    <span>{service.durationMinutes} min - {service.price}</span>
+                                    <span>{service.durationMinutes} min - {service.price} KM</span>
                                 </div>
-                                <button className="admin-delete-btn" onClick={() => handleDelete(service.id)}>Delete</button>
+                                <button className="admin-delete-btn" onClick={() => handleDelete(service.id, service.name)}>Obriši</button>
                             </li>
                         ))}
                     </ul>

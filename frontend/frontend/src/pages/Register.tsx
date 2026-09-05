@@ -37,10 +37,10 @@ function Register(){
     return(
         <div className="auth-page">
             <div className="auth-card">
-            <h1>Register</h1>
+            <h1>Registracija</h1>
             <form onSubmit={handleSubmit}>
                 <div className="auth-field">
-                    <label htmlFor="name">Name</label>
+                    <label htmlFor="name">Ime</label>
                     <input
                         id="name"
                         type="text"
@@ -62,7 +62,7 @@ function Register(){
                 </div>
 
                 <div className="auth-field">
-                    <label htmlFor="email">Password</label>
+                    <label htmlFor="email">Lozinka</label>
                     <input
                         id="password"
                         type="password"
@@ -76,12 +76,12 @@ function Register(){
                 {error && <p className="auth-error">{error}</p>}
 
                 <button className="auth-submit" type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? 'Registering...' : 'Register'}
+                    {isSubmitting ? 'Registracija u toku...' : 'Registrujte se'}
                 </button>
             </form>
 
             <p className="auth-switch">
-                Already have an account? <Link to="/login">Log in</Link>
+                Već imate račun? <Link to="/login">Ulogujte se</Link>
             </p>
 
             </div>

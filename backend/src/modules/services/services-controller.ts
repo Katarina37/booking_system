@@ -55,6 +55,10 @@ export async function deleteServiceController(req: Request, res: Response): Prom
             res.status(404).json({message: error.message});
             return;
         }
+        if(error instanceof Error && error.message === 'Usluga ima rezervacije i ne moze biti obrisana'){
+            res.status(409).json({message: error.message});
+            return;
+        }
         res.status(500).json({message: 'Greska na serveru'});
     }
 }

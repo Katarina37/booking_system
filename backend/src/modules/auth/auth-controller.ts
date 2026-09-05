@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { LoginInput, RegisterInput } from "../../types/user-types";
 import { login, register } from "./auth-service";
+import { json } from "node:stream/consumers";
 
 export async function registerController(req: Request, res: Response): Promise<void>{
 
@@ -11,8 +12,14 @@ export async function registerController(req: Request, res: Response): Promise<v
             return;
         }
 
-        const newUser = await register(input);
-        res.status(201).json(newUser);
+        const {user, token} = await register(input);
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            maxAge: 7*24*60*60*1000
+        });
+        res.status(201).json(user);
    }catch(error){
         if(error instanceof Error && error.message === 'Korisnik sa datim mejlom vec postoji'){
             res.status(409).json({message: error.message});
@@ -50,4 +57,13 @@ export async function loginController(req: Request, res: Response): Promise<void
         console.error(error);
         res.status(500).json({message: 'Greska na serveru'});
     }
+}
+
+export async function logoutController(req: Request, res: Response): Promise<void> {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+    });
+    res.status(200).json({message: 'Uspjesno ste se odjavili'});
 }

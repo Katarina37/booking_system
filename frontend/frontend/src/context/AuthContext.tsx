@@ -1,6 +1,6 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import { loginUser, registerUser } from "../api/auth-api";
+import { loginUser, registerUser, logoutUser } from "../api/auth-api";
 import type { LoginInput, RegisterInput, AuthUser } from "../types/auth-types";
 
 //govori nam sta ce biti dostupno komponentama koje budu koristile kontekst
@@ -10,7 +10,7 @@ interface AuthContextType{
     login: (input: LoginInput) => Promise<void>;
     register: (input: RegisterInput) => Promise<void>;
     //ova f-ja nije async, pa ne treba promise
-    logout: () => void;
+    logout: () => Promise<void>;
 }
 
 //kontejner (kao tabla) za kontekst, gdje ce biti svi podaci iz ovog gore interfejsa
@@ -36,7 +36,8 @@ export function AuthProvider({children}: {children: ReactNode}){
         setUser(newUser);
     }
 
-    function logout(){
+    async function logout(){
+        await logoutUser();
         setUser(null);
     }
 

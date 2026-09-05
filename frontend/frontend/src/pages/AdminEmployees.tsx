@@ -15,6 +15,7 @@ function AdminEmployees(){
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedServiceIds, setSelectedServicesIds] = useState<number[]>([]);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
 
     useEffect(() => {
         loadData();
@@ -62,23 +63,29 @@ function AdminEmployees(){
         }
     }
 
-    async function handleDelete(id: number) {
+    async function handleDelete(id: number, name: string) {
+        const confirmed = window.confirm(`Da li ste sigurni da zelite da obrisete zaposlenog ${name}?`)
+        if(!confirmed) return;
+        setError(null);
+        setDeletingId(id);
         try{
             await deleteEmployee(id);
             await loadData();
         }catch(err){
             setError('Brisanje zaposlenog nije uspjelo');
+        }finally{
+            setDeletingId(null);
         }
     }
     return(
         <div className="admin-page">
             <div className="admin-container">
-                <Link to="/dashboard" className="admin-back-link">Back to dashboard</Link>
-                <h1>Managing employees</h1>
+                <Link to="/dashboard" className="admin-back-link">Nazad na početnu</Link>
+                <h1>Upravljanje zaposlenima</h1>
                 <form onSubmit={handleSubmit} className="admin-form">
                     <div className="admin-form-row">
                         <div className="admin-field">
-                            <label htmlFor="name">Name</label>
+                            <label htmlFor="name">Ime</label>
                             <input
                             id="name"
                             value={name}
@@ -99,7 +106,7 @@ function AdminEmployees(){
                     </div>
                     
                 <div className="admin-checkbox-group">
-                    <p>Employee's services:</p>
+                    <p>Usluge zaposlenih:</p>
                     {services.map((service) => (
                         <label key={service.id} className="admin-checkbox-label">
                             <input
@@ -112,13 +119,13 @@ function AdminEmployees(){
                 </div>
 
                 {error && <p className="admin-error">{error}</p>}
-                <button type="submit" className="admin-submit">Add employee</button>
+                <button type="submit" className="admin-submit">Dodaj zaposlenog</button>
             </form>
-            <h2>Existing employees</h2>
+            <h2>Postojeći zaposleni</h2>
             {isLoading ? (
-                <p>Loading...</p>
+                <p>Učitavanje...</p>
                 ) : employees.length === 0 ? (
-                <p className="admin-empty">Currently no added employees</p>
+                <p className="admin-empty">Trenutno nema dodatih zaposlenih</p>
                 ) : (
                 <ul className="admin-list">
                     {employees.map((employee) => (
@@ -130,8 +137,8 @@ function AdminEmployees(){
                                     {employee.services.map((s) => s.name).join(', ')}
                                 </span>
                             </div>
-                            <button className="admin-delete-btn" onClick={() => handleDelete(employee.id)}>
-                                Delete
+                            <button className="admin-delete-btn" onClick={() => handleDelete(employee.id, employee.name)}>
+                                Obriši
                             </button>
                         </li>
                     ))}

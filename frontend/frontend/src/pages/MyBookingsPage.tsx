@@ -73,17 +73,17 @@ function MyBookingsPage(){
     return(
         <div className="admin-page">
             <div className="admin-container">
-                <Link to="/dashboard" className="admin-back-link">Back to dashboard</Link>
-                <h1>My bookings</h1>
+                <Link to="/dashboard" className="admin-back-link">Nazad na početnu</Link>
+                <h1>Moje rezervacije</h1>
                 {
                     bookings.length === 0 ? (
-                        <p className="admin-empty">No added bookings</p>
+                        <p className="admin-empty">Nema dodatih rezervacija</p>
                     ) : (
                         <>
-                            <h2>Upcoming bookings</h2>
+                            <h2>Nadolazeće rezervacije</h2>
                             {
                                 upcoming.length === 0 ? (
-                                    <p className="admin-empty">No upcoming bookings</p>
+                                    <p className="admin-empty">Nema nadolazećih rezervacija</p>
                                 ) : (
                                     <ul className="admin-list">
                                         {
@@ -94,13 +94,13 @@ function MyBookingsPage(){
                                                         {formatDateTime(booking.startTime)}
                                                     </strong>
                                                     <span>
-                                                        {booking.serviceName} at {booking.employeeName}
+                                                        {booking.serviceName} kod {booking.employeeName}
                                                     </span>
                                                 </div>
                                                 <button 
                                                 className="admin-delete-btn"
                                                 onClick={() => handleCancel(booking.id)} disabled={deletingId === booking.id}>
-                                                    Cancel
+                                                    Otkaži
                                                 </button>
                                             </li>
                                             ))
@@ -111,7 +111,7 @@ function MyBookingsPage(){
                             {
                                 past.length > 0 && (
                                     <>
-                                        <h2>Previous bookings</h2>
+                                        <h2>Prethodne rezervacije</h2>
                                         <ul className="admin-list">
                                             {
                                                 past.map((booking) => (
@@ -121,11 +121,11 @@ function MyBookingsPage(){
                                                                 {formatDateTime(booking.startTime)}
                                                             </strong>
                                                             <span>
-                                                                {booking.serviceName} at {booking.employeeName}
+                                                                {booking.serviceName} kod {booking.employeeName}
                                                             </span>
                                                         </div>
                                                         <span className="booking-status-badge">
-                                                            Past
+                                                            Prethodna
                                                         </span>
                                                     </li>
                                                 ))

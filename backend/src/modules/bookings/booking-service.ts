@@ -61,7 +61,7 @@ export async function getAvailableSlots(query: AvailableSlostsQuery): Promise<st
             const minutes = String(candidateStart.getUTCMinutes()).padStart(2, '0');
 
             availableSlots.push(
-                `${year}-${month}-${day}T${hours}:${minutes}:00`
+                `${year}-${month}-${day}T${hours}:${minutes}:00Z`
             );
         }
         //sljedeci prolaz ide tacno gdje prethodni stao, npr. od 8:30

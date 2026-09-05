@@ -1,7 +1,7 @@
 //mapira odgovarajuci HTTP metod na odgovarajuci kontroler
 
 import { Router } from "express";
-import { loginController, registerController } from "./auth-controller";
+import { loginController, registerController, logoutController } from "./auth-controller";
 
 const router = Router();
 
@@ -9,5 +9,6 @@ const router = Router();
 
 router.post('/register', registerController);
 router.post('/login', loginController);
+router.post('/logout', logoutController)
 
 export default router;

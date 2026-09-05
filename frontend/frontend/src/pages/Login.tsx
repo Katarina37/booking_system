@@ -31,7 +31,7 @@ function Login(){
     return(
         <div className="auth-page">
             <div className="auth-card">
-            <h1>Login</h1>
+            <h1>Logovanje</h1>
             <form onSubmit={handleSubmit}>
                 <div className="auth-field">
                     <label htmlFor="email">Email</label>
@@ -45,7 +45,7 @@ function Login(){
                 </div>
 
                 <div className="auth-field">
-                    <label htmlFor="password">Password</label>
+                    <label htmlFor="password">Lozinka</label>
                     <input
                         id={password}
                         type="password"
@@ -58,11 +58,11 @@ function Login(){
                 {error && <p className="auth-error">{error}</p>}
 
                 <button type="submit" className="auth-submit" disabled={isSubmitting}>
-                    {isSubmitting ? 'Loggin in...' : "Login"}
+                    {isSubmitting ? 'Logovanje u toku...' : "Ulogujte se"}
                 </button>
             </form>
 
-            <p className="auth-switch">Don't have an account? <Link to="/register">Register here</Link></p>
+            <p className="auth-switch">Nemate nalog? <Link to="/register">Registrujte se</Link></p>
 
             </div>
             

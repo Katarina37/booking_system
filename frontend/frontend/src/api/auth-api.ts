@@ -13,3 +13,7 @@ export async function loginUser(input: LoginInput): Promise<AuthUser>{
     const response = await axiosInstance.post<AuthUser>('/auth/login', input);
     return response.data;
 }
+
+export async function logoutUser(): Promise<void> {
+    await axiosInstance.post('/auth/logout');
+}

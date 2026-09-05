@@ -15,9 +15,9 @@ function Dashboard(){
         <div className="dashboard-page">
             <div className="dashboard-header">
                 <div className="dashboard-header-text">
-                    <h1>Welcome {user?.name}</h1>
+                    <h1>Dobrodošao {user?.name}</h1>
                 </div>
-                <button className="dashboard-logout" onClick={handleLogout}>Log out</button>
+                <button className="dashboard-logout" onClick={handleLogout}>Odjavi se</button>
             </div>
 
             <div className="dashboard-content">
@@ -26,12 +26,12 @@ function Dashboard(){
                     <h2>Admin panel</h2>
                     <div className="admin-panel-grid">
                         <Link to="/admin/services" className="admin-panel-card">
-                            <h3>Services</h3>
-                            <p>Add or delete services</p>
+                            <h3>Usluge</h3>
+                            <p>Dodajte ili kreirajte usluge</p>
                         </Link>
                         <Link to="/admin/employees" className="admin-panel-card">
-                             <h3>Employees</h3>
-                            <p>Manage employees and their services</p>
+                             <h3>Zaposleni</h3>
+                            <p>Upravljajte zaposlenim i njihovim uslugama</p>
                         </Link>
                     </div>
                     <br></br>
@@ -39,22 +39,15 @@ function Dashboard(){
             )}
             <div className="admin-panel-grid">
                         <Link to="/bookings" className="admin-panel-card">
-                            <h3>Bookings</h3>
-                            <p>Create a booking</p>
+                            <h3>Rezervacije</h3>
+                            <p>Kreirajte rezervaciju</p>
                         </Link>
-            </div>
-            <br></br>
-            <div className="admin-panel-grid">
                         <Link to="/my-bookings" className="admin-panel-card">
-                            <h3>My Bookings</h3>
-                            <p>View your bookings</p>
+                            <h3>Moje rezervacije</h3>
+                            <p>Pregled Vaših rezervacija</p>
                         </Link>
             </div>
         </div>
-            
-
-            
-            
         </div>
     );
 }
